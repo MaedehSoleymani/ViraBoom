@@ -1,0 +1,157 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>مقالات | ویرابوم</title>
+    <meta name="description" content="مقالات و مطالب آموزشی ویرابوم؛ ایده‌هایی برای یادگیری، خلاقیت و رشد.">
+
+    <link rel="stylesheet" href="{% static 'weblog/user_article_list.css' %}">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="/articles/" class="brand">
+                <span class="brand-icon">و</span>
+                <span>ویرابوم</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="/articles/" class="active">مقاله‌ها</a>
+                <a href="#about">درباره ما</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <span class="eyebrow">مجله ویرابوم</span>
+
+                <h1>
+                    چیزهای تازه
+                    <span>یاد بگیر.</span>
+                </h1>
+
+                <p>
+                    مجموعه‌ای از مقاله‌ها و ایده‌های مفید
+                    برای یادگیری، رشد و کشف دنیای جدید.
+                </p>
+
+                <a href="#articles" class="hero-button">
+                    خواندن مقاله‌ها
+                    <span>←</span>
+                </a>
+            </div>
+
+            <div class="hero-decoration decoration-one"></div>
+            <div class="hero-decoration decoration-two"></div>
+        </section>
+
+        <section class="articles-section container" id="articles">
+            <div class="section-heading">
+                <div>
+                    <span class="section-label">مطالب مجله</span>
+                    <h2>آخرین مقاله‌ها</h2>
+                    <p>مطالبی برای خواندن، فکر کردن و یاد گرفتن.</p>
+                </div>
+
+                <span class="article-count">
+                    {{ articles|length }} مقاله
+                </span>
+            </div>
+
+            {% if articles %}
+                <div class="articles-grid">
+                    {% for article in articles %}
+
+                        <article class="article-card">
+
+                            <a href="{% url 'weblog:article_detail' slug=article.slug %}"
+                               class="article-card-link">
+
+                                <div class="article-image">
+                                    {% if article.img %}
+                                        <img
+                                            src="{{ article.img.url }}"
+                                            alt="{{ article.alt_img|default:article.title }}"
+                                            loading="lazy"
+                                        >
+                                    {% else %}
+                                        <div class="image-placeholder">
+                                            <span>و</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="article-body">
+                                    <div class="article-meta">
+                                        <span class="author">{{ article.author }}</span>
+
+                                        <span class="meta-dot"></span>
+
+                                        <time>
+                                            {% if article.published_date %}
+                                                {{ article.published_date|date:"Y/m/d" }}
+                                            {% else %}
+                                                {{ article.created_date|date:"Y/m/d" }}
+                                            {% endif %}
+                                        </time>
+                                    </div>
+
+                                    <h3>{{ article.title }}</h3>
+
+                                    <p class="article-excerpt">
+                                        {{ article.content|striptags|truncatewords:25 }}
+                                    </p>
+                                </div>
+                            </a>
+
+                            <div class="article-footer">
+                                <span class="views">
+                                    <span aria-hidden="true">◉</span>
+                                    {{ article.view_count }} بازدید
+                                </span>
+
+                                <a href="{% url 'weblog:article_detail' slug=article.slug %}"
+                                   class="read-more">
+                                    ادامه مطلب ←
+                                </a>
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">✦</div>
+                    <h3>هنوز مقاله‌ای منتشر نشده!</h3>
+                    <p>
+                        به‌زودی مطالب جدیدی در این بخش قرار می‌گیرند.
+                    </p>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="about-section" id="about">
+            <div class="container about-content">
+                <span class="about-icon">✦</span>
+                <div>
+                    <h2>یادگیری، همیشه ادامه دارد.</h2>
+                    <p>
+                        اینجا فضایی برای به‌اشتراک‌گذاشتن دانش
+                        و تجربه‌های تازه است.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

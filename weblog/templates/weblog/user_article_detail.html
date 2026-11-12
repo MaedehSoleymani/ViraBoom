@@ -1,0 +1,132 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% if article.seo_title %}{{ article.seo_title }}{% else %}{{ article.title }} | ویرابوم{% endif %}</title>
+
+    {% if article.meta_description %}
+        <meta name="description" content="{{ article.meta_description }}">
+    {% endif %}
+
+    <link rel="stylesheet" href="{% static 'weblog/user_article_detail.css' %}">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="{% url 'weblog:article_list' %}" class="brand">
+                <span class="brand-icon">و</span>
+                <span>ویرابوم</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="{% url 'weblog:article_list' %}">مقاله‌ها</a>
+                <a href="{% url 'weblog:article_list' %}#about">درباره ما</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container article-page">
+
+        <nav class="breadcrumb" aria-label="مسیر صفحه">
+            <a href="{% url 'weblog:article_list' %}">خانه</a>
+            <span>←</span>
+            <span>{{ article.title }}</span>
+        </nav>
+
+        <article class="article-container">
+
+            <header class="article-header">
+                <span class="article-label">مجله ویرابوم</span>
+
+                <h1>{{ article.title }}</h1>
+
+                <p class="article-subtitle">
+                    چند دقیقه از وقتت رو به یادگیری اختصاص بده.
+                </p>
+
+                <div class="article-info">
+
+                    <div class="author-avatar">و</div>
+
+                    <div class="author-details">
+                        <span class="info-label">نویسنده</span>
+                        <strong>{{ article.author }}</strong>
+                    </div>
+
+                    <span class="info-divider"></span>
+
+                    <div class="date-info">
+                        <span class="info-label">تاریخ انتشار</span>
+                        <strong>
+                            {% if article.published_date %}
+                                {{ article.published_date|date:"Y/m/d" }}
+                            {% else %}
+                                {{ article.created_date|date:"Y/m/d" }}
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <span class="info-divider"></span>
+
+                    <div class="views-info">
+                        <span class="info-label">تعداد بازدید</span>
+                        <strong>{{ article.view_count }}</strong>
+                    </div>
+
+                </div>
+            </header>
+
+            {% if article.img %}
+                <figure class="article-cover">
+                    <img
+                        src="{{ article.img.url }}"
+                        alt="{{ article.alt_img|default:article.title }}"
+                    >
+                </figure>
+            {% endif %}
+
+            <div class="article-content">
+                {{ article.content|linebreaks }}
+            </div>
+
+            <footer class="article-bottom">
+                <span class="bottom-icon">✦</span>
+                <div>
+                    <h3>به پایان این مقاله رسیدیم!</h3>
+                    <p>
+                        امیدواریم چیز تازه‌ای یاد گرفته باشی.
+                        یادگیری با قدم‌های کوچک شروع می‌شود.
+                    </p>
+                </div>
+            </footer>
+
+        </article>
+
+        <div class="back-area">
+            <a href="{% url 'weblog:article_list' %}" class="back-button">
+                <span>←</span>
+                بازگشت به همه مقاله‌ها
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <a href="{% url 'weblog:article_list' %}" class="brand footer-brand">
+                <span class="brand-icon">و</span>
+                <span>ویرابوم</span>
+            </a>
+
+            <p>فضایی برای یادگیری، خلاقیت و رشد.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

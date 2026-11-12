@@ -1,0 +1,525 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ویرایش مقاله | مجله‌ما</title>
+    <link rel="stylesheet" href="{% static 'weblog/admin_write_article.css' %}">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <a href="{% url 'weblog:admin_article_list' %}" class="logo">
+            <span class="logo-icon">📚</span>
+            <span>
+                <strong>مجله‌ما</strong>
+                <small>مدیریت محتوای سایت</small>
+            </span>
+        </a>
+
+        <p class="menu-title">مدیریت محتوا</p>
+
+        <nav class="side-menu">
+            <a href="{% url 'weblog:admin_article_list' %}">📋 مدیریت مقالات</a>
+            <a href="{% url 'weblog:write_article' %}">✍️ نوشتن مقاله</a>
+            <a href="{% url 'weblog:admin_article_list' %}">💬 نظرات و پیشنهادات</a>
+            <a href="{% url 'weblog:admin_article_list' %}">🗂️ دسته‌بندی محتوا</a>
+            <a href="{% url 'weblog:article_list' %}">🌐 مشاهده سایت</a>
+        </nav>
+
+        <div class="sidebar-note">
+            <span>💡</span>
+            <p>ویرایش محتوای منتشرشده نیازمند بازبینی دقیق و ثبت نسخه‌ی جدید است.</p>
+        </div>
+    </aside>
+
+    <main class="main-area">
+
+        <header class="topbar">
+            <div>
+                <span class="topbar-label">پنل مدیریت</span>
+                <strong>مجله‌ما / ویرایش مقاله</strong>
+            </div>
+            <a href="{% url 'weblog:article_list' %}" class="site-link">
+                🌐 مشاهده سایت
+            </a>
+        </header>
+
+        <div class="content">
+
+            <div class="page-heading">
+                <div>
+                    <span class="eyebrow">✏️ ویرایش محتوا</span>
+                    <h1>ویرایش مقاله</h1>
+                    <p>
+                        مقاله‌ی «{{ article.title }}» —
+                        نسخه‌ی فعلی در تاریخ {{ article.updated_date|date:"Y/m/d H:i" }} آخرین بار ویرایش شده است.
+                    </p>
+                </div>
+                <span class="heading-icon">🛠️</span>
+            </div>
+
+            {% if form.errors or faq_formset.errors or link_formset.errors %}
+                <div class="error-box">
+                    <strong>⚠️ فرم کامل نیست.</strong>
+                    لطفاً خطاهای نمایش‌داده‌شده را بررسی کن.
+                    {{ form.errors }}
+                    {{ faq_formset.errors }}
+                    {{ link_formset.errors }}
+                </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" id="article-form">
+                {% csrf_token %}
+
+                <div class="editor-layout">
+
+                    <div class="editor-main">
+
+                        <section class="panel">
+                            <div class="panel-heading">
+                                <span>📰</span>
+                                <div>
+                                    <h2>اطلاعات اصلی محتوا</h2>
+                                    <p>عنوان و معرفی کوتاه مقاله را ویرایش کن.</p>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.title.id_for_label }}">عنوان اصلی *</label>
+                                {{ form.title }}
+                                {{ form.title.errors }}
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.introduction.id_for_label }}">معرفی کوتاه</label>
+                                {{ form.introduction }}
+                                {{ form.introduction.errors }}
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="{{ form.author.id_for_label }}">✍️ نویسنده</label>
+                                    {{ form.author }}
+                                </div>
+                                <div class="field">
+                                    <label for="{{ form.reviewer.id_for_label }}">🔎 بازبین</label>
+                                    {{ form.reviewer }}
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.source_info.id_for_label }}">📌 منبع و تأیید اطلاعات</label>
+                                {{ form.source_info }}
+                                <small>منبع اطلاعات و توضیحات مربوط به صحت محتوا را ثبت کن.</small>
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-heading">
+                                <span>✏️</span>
+                                <div>
+                                    <h2>متن اصلی مقاله</h2>
+                                    <p>متن مقاله را ویرایش کن و از تیترها برای خوانایی استفاده کن.</p>
+                                </div>
+                            </div>
+
+                            <div class="editor-tools">
+                                <button type="button" class="tool-button" id="add-heading">
+                                    + افزودن تیتر
+                                </button>
+                                <button type="button" class="tool-button" id="add-list">
+                                    + افزودن فهرست
+                                </button>
+                                <button type="button" class="tool-button" id="preview-button">
+                                    👁️ پیش‌نمایش متن
+                                </button>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.content.id_for_label }}">متن مقاله *</label>
+                                {{ form.content }}
+                                {{ form.content.errors }}
+                            </div>
+
+                            <div class="word-count">
+                                <span>📊 تعداد واژه‌ها:</span>
+                                <strong id="word-count">۰</strong>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.keywords.id_for_label }}">🏷️ واژه‌ها و کلمات کلیدی</label>
+                                {{ form.keywords }}
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.internal_notes.id_for_label }}">🔒 یادداشت داخلی</label>
+                                {{ form.internal_notes }}
+                                <small>این یادداشت برای کاربران سایت نمایش داده نمی‌شود.</small>
+                            </div>
+                        </section>
+
+                        <section class="panel seo-panel">
+                            <div class="panel-heading">
+                                <span>🚀</span>
+                                <div>
+                                    <h2>تنظیمات سئو</h2>
+                                    <p>نمایش احتمالی مقاله در نتایج موتورهای جست‌وجو.</p>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.slug.id_for_label }}">🔗 نامک آدرس (Slug) *</label>
+                                {{ form.slug }}
+                                {{ form.slug.errors }}
+                                <small>از حروف انگلیسی، عدد و خط تیره استفاده کن.</small>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.seo_title.id_for_label }}">عنوان سئو</label>
+                                {{ form.seo_title }}
+                                <div class="field-hint">اگر خالی باشد، عنوان اصلی مقاله استفاده می‌شود.</div>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.meta_description.id_for_label }}">توضیحات سئو (Meta Description)</label>
+                                {{ form.meta_description }}
+                                <div class="field-hint">
+                                    خلاصه‌ای روشن و جذاب از مقاله بنویس.
+                                    <span id="description-count">۰</span> نویسه
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.focus_keyphrase.id_for_label }}">🎯 عبارت کلیدی اصلی</label>
+                                {{ form.focus_keyphrase }}
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-heading">
+                                <span>❓</span>
+                                <div>
+                                    <h2>پرسش‌های متداول (FAQ)</h2>
+                                    <p>پرسش‌های مهم کاربران و پاسخ آن‌ها را مدیریت کن.</p>
+                                </div>
+                            </div>
+
+                            {{ faq_formset.management_form }}
+
+                            <div id="faq-forms">
+                                {% for faq in faq_formset %}
+                                    <div class="repeat-card">
+                                        {% for hidden in faq.hidden_fields %}{{ hidden }}{% endfor %}
+                                        <div class="field">
+                                            <label>پرسش {{ forloop.counter }}</label>
+                                            {{ faq.question }}
+                                        </div>
+                                        <div class="field">
+                                            <label>پاسخ</label>
+                                            {{ faq.answer }}
+                                        </div>
+                                        {% if faq_formset.can_delete %}
+                                            <label class="delete-check">{{ faq.DELETE }} حذف این پرسش</label>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="button" class="secondary-button" id="add-faq">
+                                + افزودن پرسش
+                            </button>
+
+                            <template id="empty-faq-form">
+                                <div class="repeat-card">
+                                    {% for hidden in faq_formset.empty_form.hidden_fields %}{{ hidden }}{% endfor %}
+                                    <div class="field">
+                                        <label>پرسش جدید</label>
+                                        {{ faq_formset.empty_form.question }}
+                                    </div>
+                                    <div class="field">
+                                        <label>پاسخ</label>
+                                        {{ faq_formset.empty_form.answer }}
+                                    </div>
+                                    {% if faq_formset.can_delete %}
+                                        <label class="delete-check">{{ faq_formset.empty_form.DELETE }} حذف این پرسش</label>
+                                    {% endif %}
+                                </div>
+                            </template>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-heading">
+                                <span>🖼️</span>
+                                <div>
+                                    <h2>تصویر محتوا</h2>
+                                    <p>تصویر مقاله را تغییر بده یا حفظ کن.</p>
+                                </div>
+                            </div>
+
+                            {% if article.img %}
+                                <div class="current-image">
+                                    <p>تصویر فعلی:</p>
+                                    <img src="{{ article.img.url }}"
+                                         alt="{{ article.alt_img|default:article.title }}">
+                                </div>
+                            {% endif %}
+
+                            <div class="field">
+                                <label for="{{ form.img.id_for_label }}">بارگذاری تصویر جدید</label>
+                                {{ form.img }}
+                                <small>اگر تصویر جدید انتخاب نکنی، تصویر فعلی حفظ می‌شود.</small>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.alt_img.id_for_label }}">توضیح تصویر (Alt)</label>
+                                {{ form.alt_img }}
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-heading">
+                                <span>🔗</span>
+                                <div>
+                                    <h2>لینک‌های داخلی</h2>
+                                    <p>به صفحات مرتبط سایت پیوند بده.</p>
+                                </div>
+                            </div>
+
+                            {{ link_formset.management_form }}
+
+                            <div id="link-forms">
+                                {% for link in link_formset %}
+                                    <div class="repeat-card">
+                                        {% for hidden in link.hidden_fields %}{{ hidden }}{% endfor %}
+                                        <div class="field">
+                                            <label>عنوان لینک</label>
+                                            {{ link.title }}
+                                        </div>
+                                        <div class="field">
+                                            <label>آدرس لینک</label>
+                                            {{ link.url }}
+                                        </div>
+                                        {% if link_formset.can_delete %}
+                                            <label class="delete-check">{{ link.DELETE }} حذف این لینک</label>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="button" class="secondary-button" id="add-link">
+                                + افزودن لینک داخلی
+                            </button>
+
+                            <template id="empty-link-form">
+                                <div class="repeat-card">
+                                    {% for hidden in link_formset.empty_form.hidden_fields %}{{ hidden }}{% endfor %}
+                                    <div class="field">
+                                        <label>عنوان لینک</label>
+                                        {{ link_formset.empty_form.title }}
+                                    </div>
+                                    <div class="field">
+                                        <label>آدرس لینک</label>
+                                        {{ link_formset.empty_form.url }}
+                                    </div>
+                                    {% if link_formset.can_delete %}
+                                        <label class="delete-check">{{ link_formset.empty_form.DELETE }} حذف این لینک</label>
+                                    {% endif %}
+                                </div>
+                            </template>
+                        </section>
+
+                    </div>
+
+                    <aside class="editor-side">
+
+                        <section class="panel publish-panel">
+                            <h2>🚀 وضعیت و انتشار</h2>
+
+                            <div class="status-preview status-{{ article.status }}">
+                                <span class="status-dot"></span>
+                                <span>
+                                    وضعیت فعلی:
+                                    {% if article.status == "published" %}منتشرشده
+                                    {% elif article.status == "review" %}در انتظار بازبینی
+                                    {% else %}پیش‌نویس{% endif %}
+                                </span>
+                            </div>
+
+                            <div class="field">
+                                <label for="{{ form.published_date.id_for_label }}">📅 تاریخ انتشار</label>
+                                {{ form.published_date }}
+                            </div>
+
+                            <div class="field">
+                                <label for="revision_note">📝 یادداشت این نسخه</label>
+                                <input type="text" id="revision_note" name="revision_note"
+                                       placeholder="مثلاً: اصلاح بخش سئو">
+                            </div>
+
+                            <button type="submit" name="action" value="draft" class="primary-button">
+                                💾 ذخیره به‌عنوان پیش‌نویس
+                            </button>
+
+                            <button type="submit" name="action" value="review" class="secondary-button full-button">
+                                📩 ارسال برای بازبینی
+                            </button>
+
+                            <button type="submit" name="action" value="published" class="primary-button">
+                                ✅ انتشار مقاله
+                            </button>
+
+                            <button type="button" id="refresh-status" class="text-button">
+                                🔄 تازه‌سازی چک‌لیست
+                            </button>
+
+                            <a href="{% url 'weblog:admin_article_list' %}" class="cancel-link">
+                                انصراف و بازگشت
+                            </a>
+                        </section>
+
+                        <section class="panel checklist-panel">
+                            <h2>✅ چک‌لیست مقاله</h2>
+                            <ul id="checklist">
+                                <li id="check-title">عنوان و معرفی کوتاه را تکمیل کن.</li>
+                                <li id="check-content">متن اصلی را بنویس.</li>
+                                <li id="check-source">منبع اطلاعات را ثبت کن.</li>
+                                <li id="check-reviewer">بازبین را مشخص کن.</li>
+                                <li id="check-seo">توضیحات سئو را بررسی کن.</li>
+                            </ul>
+                            <p class="help-note">این چک‌لیست راهنمای اولیه است و جایگزین بازبینی انسانی نیست.</p>
+                        </section>
+
+                        <section class="panel history-panel">
+                            <h2>🕘 تاریخچه ویرایش</h2>
+                            {% for revision in revisions %}
+                                <div class="revision">
+                                    <strong>{{ revision.note|default:"نسخه مقاله" }}</strong>
+                                    <span>نسخه {{ revision.version }}</span>
+                                    <small>{{ revision.created_date|date:"Y/m/d H:i" }}</small>
+                                </div>
+                            {% empty %}
+                                <p class="empty-history">هنوز نسخه‌ای برای این مقاله ثبت نشده است.</p>
+                            {% endfor %}
+                        </section>
+
+                    </aside>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+<script>
+    const contentField = document.getElementById("id_content");
+    const titleField = document.getElementById("id_title");
+    const introField = document.getElementById("id_introduction");
+    const sourceField = document.getElementById("id_source_info");
+    const reviewerField = document.getElementById("id_reviewer");
+    const descriptionField = document.getElementById("id_meta_description");
+
+    function updateChecklist() {
+        const content = contentField.value.trim();
+        const intro = introField.value.trim();
+        const title = titleField.value.trim();
+        const source = sourceField.value.trim();
+        const reviewer = reviewerField.value.trim();
+
+        const words = content ? content.split(/\s+/).length : 0;
+        document.getElementById("word-count").textContent = words.toLocaleString("fa-IR");
+
+        document.getElementById("check-title").textContent =
+            title && intro.length >= 40
+                ? "✅ عنوان و معرفی کوتاه تکمیل شده است."
+                : "عنوان و معرفی کوتاه را کامل کن؛ معرفی بهتر است حداقل ۴۰ نویسه باشد.";
+
+        document.getElementById("check-content").textContent =
+            words >= 80
+                ? "✅ متن اصلی حداقل ۸۰ واژه دارد."
+                : "⚠️ متن اصلی کمتر از ۸۰ واژه است؛ اطلاعات مفید بیشتری بنویس.";
+
+        document.getElementById("check-source").textContent =
+            source ? "✅ منبع اطلاعات ثبت شده است." : "منبع اطلاعات و توضیح صحت محتوا را ثبت کن.";
+
+        document.getElementById("check-reviewer").textContent =
+            reviewer ? "✅ بازبین مشخص شده است." : "بازبین را مشخص کن.";
+
+        document.getElementById("check-seo").textContent =
+            descriptionField.value.trim()
+                ? "✅ توضیحات سئو وارد شده است."
+                : "توضیحات سئو را تکمیل کن.";
+    }
+
+    [contentField, titleField, introField, sourceField, reviewerField, descriptionField]
+        .forEach(field => field.addEventListener("input", updateChecklist));
+
+    descriptionField.addEventListener("input", () => {
+        document.getElementById("description-count").textContent =
+            descriptionField.value.length.toLocaleString("fa-IR");
+    });
+
+    document.getElementById("refresh-status").addEventListener("click", updateChecklist);
+
+    document.getElementById("add-heading").addEventListener("click", () => {
+        contentField.setRangeText("\n\nعنوان بخش جدید\n\n", contentField.selectionStart,
+            contentField.selectionEnd, "end");
+        contentField.focus();
+        updateChecklist();
+    });
+
+    document.getElementById("add-list").addEventListener("click", () => {
+        contentField.setRangeText("\n\n- مورد اول\n- مورد دوم\n- مورد سوم\n",
+            contentField.selectionStart, contentField.selectionEnd, "end");
+        contentField.focus();
+        updateChecklist();
+    });
+
+    document.getElementById("preview-button").addEventListener("click", () => {
+        const preview = window.open("", "_blank");
+        if (!preview) {
+            alert("برای نمایش پیش‌نمایش، اجازه باز شدن پنجره جدید را بده.");
+            return;
+        }
+
+        const safeText = contentField.value
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+        preview.document.write(
+            "<!DOCTYPE html><html lang='fa' dir='rtl'><meta charset='UTF-8'>" +
+            "<title>پیش‌نمایش مقاله</title>" +
+            "<body style='font-family:Tahoma;max-width:800px;margin:40px auto;line-height:2'>" +
+            "<h1>" + titleField.value.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</h1>" +
+            "<p>" + safeText.replace(/\n/g, "<br>") + "</p></body></html>"
+        );
+        preview.document.close();
+    });
+
+    function addForm(prefix, containerId, templateId) {
+        const totalForms = document.getElementById("id_" + prefix + "-TOTAL_FORMS");
+        const index = Number(totalForms.value);
+        const template = document.getElementById(templateId).innerHTML;
+        document.getElementById(containerId).insertAdjacentHTML(
+            "beforeend",
+            template.replace(/__prefix__/g, index)
+        );
+        totalForms.value = index + 1;
+    }
+
+    document.getElementById("add-faq").addEventListener("click", () => {
+        addForm("faqs", "faq-forms", "empty-faq-form");
+    });
+
+    document.getElementById("add-link").addEventListener("click", () => {
+        addForm("internal_links", "link-forms", "empty-link-form");
+    });
+
+    updateChecklist();
+</script>
+
+</body>
+</html>
