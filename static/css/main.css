@@ -1,0 +1,267 @@
+/* ==========================================================================
+   Viraboom — main.css
+   پالت: Ivory Mist #F4F1EC · Warm Greige #B7B0A6 · Charcoal Shadow #2E2E2C · Soft Gold #C6A75E
+   همهٔ فاصله‌ها با ویژگی‌های logical نوشته شده‌اند؛ بنابراین RTL/LTR بدون تغییر کار می‌کند.
+   ========================================================================== */
+
+/* ── ۱. توکن‌ها ─────────────────────────────────────────────────────────── */
+:root {
+  --ivory: #F4F1EC;
+  --greige: #B7B0A6;
+  --charcoal: #2E2E2C;
+  --gold: #C6A75E;
+
+  --paper: #FBFAF7;          /* سطح کارت‌ها */
+  --ivory-deep: #EAE5DC;     /* پس‌زمینهٔ ثانویه */
+  --line: #DDD6CA;           /* خطوط و بوردرها */
+  --ink: #2E2E2C;            /* متن اصلی */
+  --ink-soft: #6B665E;       /* متن کم‌رنگ‌تر (کنتراست ≥ 4.5 روی ivory) */
+  --gold-ink: #7A611F;       /* طلایی تیره برای متن/لینک */
+  --gold-soft: #EFE3BF;
+  --ok: #2F6B4A;  --ok-bg: #E3EFE7;
+  --warn: #8A5A12; --warn-bg: #F6E9CC;
+  --danger: #A23A2B; --danger-bg: #F6DEDA;
+  --info: #3F5A73; --info-bg: #E1EAF1;
+
+  --font: "Vazirmatn", Tahoma, "Segoe UI", system-ui, sans-serif;
+
+  --r-sm: 8px;  --r-md: 12px;  --r-lg: 20px;
+  --shadow-sm: 0 1px 2px rgba(46, 46, 44, .06);
+  --shadow-md: 0 1px 2px rgba(46, 46, 44, .05), 0 14px 32px -18px rgba(46, 46, 44, .28);
+  --ring: 0 0 0 3px rgba(198, 167, 94, .45);
+  --container: 1120px;
+}
+
+/* ── ۲. ریست و پایه ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-block-start: 5rem; }
+body {
+  margin: 0; min-height: 100vh; display: flex; flex-direction: column;
+  background: var(--ivory); color: var(--ink);
+  font-family: var(--font); font-size: 1rem; line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+main { flex: 1; }
+main:focus { outline: none; }
+img, svg { max-width: 100%; display: block; }
+h1, h2, h3, p { margin-block: 0; }
+h1, h2, h3 { line-height: 1.4; font-weight: 800; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--charcoal); outline-offset: 2px; box-shadow: var(--ring); }
+[hidden] { display: none !important; }
+
+.container { width: min(100% - 2rem, var(--container)); margin-inline: auto; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.skip-link { position: absolute; inset-inline-start: 1rem; inset-block-start: -4rem; z-index: 100; background: var(--charcoal); color: var(--ivory); padding: .5rem 1rem; border-radius: var(--r-sm); text-decoration: none; }
+.skip-link:focus { inset-block-start: 1rem; }
+.muted { color: var(--ink-soft); }
+.link { color: var(--gold-ink); font-weight: 500; text-underline-offset: 4px; }
+.link:hover { color: var(--charcoal); }
+.inline-form { display: inline; margin: 0; }
+
+/* ── ۳. دکمه‌ها ─────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 46px; padding: .55rem 1.4rem; border: 1.5px solid transparent;
+  border-radius: var(--r-md); font-weight: 700; font-size: .98rem; line-height: 1.3;
+  text-decoration: none; cursor: pointer; transition: background-color .15s, border-color .15s, color .15s;
+}
+.btn-primary { background: var(--gold); color: var(--charcoal); }
+.btn-primary:hover { background: #D3B66F; }
+.btn-primary:active { background: #B99A52; }
+.btn-outline { background: transparent; border-color: var(--charcoal); color: var(--charcoal); }
+.btn-outline:hover { background: var(--charcoal); color: var(--ivory); }
+.btn-ghost { background: transparent; color: var(--ink-soft); }
+.btn-ghost:hover { background: var(--ivory-deep); color: var(--charcoal); }
+.btn-sm { min-height: 38px; padding: .3rem 1rem; font-size: .9rem; border-radius: var(--r-sm); }
+.btn-block { width: 100%; }
+.btn[disabled], .btn[aria-busy="true"] { opacity: .6; cursor: progress; }
+
+/* ── ۴. هدر و فوتر ──────────────────────────────────────────────────────── */
+.site-header { background: var(--ivory); border-block-end: 1px solid var(--line); position: sticky; inset-block-start: 0; z-index: 50; }
+.nav { display: flex; align-items: center; gap: 1.5rem; min-height: 68px; position: relative; }
+.brand { display: inline-flex; align-items: center; gap: .6rem; font-weight: 800; font-size: 1.35rem; text-decoration: none; color: var(--charcoal); }
+.nav-links { display: flex; align-items: center; gap: 1.25rem; flex: 1; }
+.nav-links > a:not(.btn) { text-decoration: none; font-weight: 500; padding-block: .4rem; border-block-end: 2px solid transparent; }
+.nav-links > a:not(.btn):hover { border-block-end-color: var(--gold); }
+.nav-spacer { flex: 1; }
+.nav-toggle { display: none; margin-inline-start: auto; width: 44px; height: 44px; border: 1.5px solid var(--line); border-radius: var(--r-sm); background: transparent; cursor: pointer; }
+.nav-toggle-bars, .nav-toggle-bars::before, .nav-toggle-bars::after { display: block; width: 20px; height: 2px; background: var(--charcoal); margin-inline: auto; position: relative; content: ""; }
+.nav-toggle-bars::before { position: absolute; inset-block-start: -6px; inset-inline-start: 0; }
+.nav-toggle-bars::after { position: absolute; inset-block-start: 6px; inset-inline-start: 0; }
+.site-footer { background: var(--charcoal); color: var(--greige); padding-block: 2.5rem; margin-block-start: 4rem; }
+.footer-inner { display: grid; gap: .25rem; }
+.footer-brand { color: var(--ivory); font-weight: 800; font-size: 1.2rem; }
+.footer-copy { font-size: .85rem; margin-block-start: .75rem; }
+
+/* ── ۵. پیام‌ها ─────────────────────────────────────────────────────────── */
+.messages { display: grid; gap: .5rem; padding-block-start: 1rem; }
+.alert { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: .8rem 1rem; border-radius: var(--r-md); border: 1px solid transparent; font-size: .95rem; }
+.alert p + p { margin-block-start: .25rem; }
+.alert-success { background: var(--ok-bg); color: var(--ok); border-color: #BFD8C9; }
+.alert-info { background: var(--info-bg); color: var(--info); border-color: #C3D3E0; }
+.alert-warning { background: var(--warn-bg); color: var(--warn); border-color: #E6D2A1; }
+.alert-error { background: var(--danger-bg); color: var(--danger); border-color: #E9BDB6; }
+.alert-close { border: 0; background: transparent; font-size: 1.4rem; line-height: 1; cursor: pointer; opacity: .7; padding: 0 .25rem; }
+.alert-close:hover { opacity: 1; }
+.form > .alert, .card > .alert { margin-block-end: 1rem; }
+
+/* ── ۶. فرم‌ها ──────────────────────────────────────────────────────────── */
+.form { display: grid; gap: 1.1rem; }
+.field { display: grid; gap: .35rem; }
+.label { font-weight: 700; font-size: .93rem; }
+.optional { font-weight: 400; color: var(--ink-soft); font-size: .85rem; }
+.control { position: relative; }
+.input {
+  width: 100%; min-height: 48px; padding: .6rem .9rem;
+  background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--r-md);
+  transition: border-color .15s, box-shadow .15s;
+}
+textarea.input { min-height: 110px; resize: vertical; line-height: 1.8; }
+select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%); background-position: calc(0% + 20px) 50%, calc(0% + 14px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-inline-end: 2.4rem; }
+.input::placeholder { color: var(--greige); }
+.input:hover { border-color: var(--greige); }
+.input:focus { outline: none; border-color: var(--charcoal); box-shadow: var(--ring); }
+.input[dir="ltr"] { text-align: left; }
+.input[aria-invalid="true"] { border-color: var(--danger); }
+/* ورودی رمز LTR است؛ دکمه با ویژگی‌های فیزیکی (right) سمت راست می‌ماند و جای آن در padding-right رزرو می‌شود */
+.control .input[type="password"], .control .input[data-pw] { padding-right: 5.25rem; padding-left: .9rem; }
+.pw-toggle { position: absolute; top: 6px; bottom: 6px; right: 6px; left: auto; min-width: 3.9rem; padding: 0 .75rem; border: 0; border-radius: var(--r-sm); background: var(--ivory-deep); color: var(--charcoal); font-size: .82rem; font-weight: 500; cursor: pointer; }
+.pw-toggle:hover { background: var(--line); }
+.help { font-size: .85rem; color: var(--ink-soft); line-height: 1.7; }
+.help ul { margin: .25rem 0 0; padding-inline-start: 1.1rem; }
+.help--warn { color: var(--warn); }
+.field-error { color: var(--danger); font-size: .87rem; font-weight: 500; }
+.readonly { padding: .6rem .9rem; background: var(--ivory-deep); border-radius: var(--r-md); min-height: 48px; display: flex; align-items: center; }
+.check { display: flex; align-items: flex-start; gap: .6rem; cursor: pointer; font-size: .93rem; }
+.check-input { width: 20px; height: 20px; margin: .25rem 0 0; accent-color: var(--charcoal); flex-shrink: 0; }
+.file-input { width: 100%; padding: .5rem; background: var(--paper); border: 1.5px dashed var(--greige); border-radius: var(--r-md); }
+.form-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .75rem; }
+.form-row .field { margin: 0; }
+.form-actions { display: flex; gap: .75rem; flex-wrap: wrap; padding-block-start: .5rem; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+
+/* ── ۷. صفحات ورود / ثبت‌نام ─────────────────────────────────────────── */
+.auth { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); min-height: calc(100vh - 68px); }
+.auth-panel { background: var(--charcoal); color: var(--greige); padding: 3rem 2.5rem; display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; overflow: hidden; }
+.auth-panel-title { color: var(--ivory); font-size: 1.7rem; font-weight: 800; line-height: 1.6; margin-block-end: .5rem; }
+.auth-panel-text { max-width: 28ch; }
+/* عنصر ماندگار صفحه: سه «قالب» روی هم، مثل کارت‌های طرح در فروشگاه */
+.auth-art { position: relative; height: 280px; max-width: 360px; }
+.tile { position: absolute; width: 190px; height: 250px; border-radius: 16px; box-shadow: 0 18px 40px -20px rgba(0, 0, 0, .7); }
+.tile--greige { background: var(--greige); inset-block-start: 20px; inset-inline-start: 0; transform: rotate(-7deg); }
+.tile--ivory { background: var(--ivory); inset-block-start: 6px; inset-inline-start: 70px; transform: rotate(2deg); padding: 22px 18px; display: flex; flex-direction: column; gap: 12px; }
+.tile--ivory i { display: block; height: 10px; border-radius: 6px; background: var(--ivory-deep); }
+.tile--ivory i:first-child { height: 90px; border-radius: 10px; background: var(--ivory-deep); }
+.tile--ivory i:nth-child(3) { width: 60%; background: var(--gold); }
+.tile--gold { background: var(--gold); inset-block-start: 0; inset-inline-start: 150px; transform: rotate(9deg); }
+.auth-main { display: grid; place-items: center; padding: 2.5rem 1.25rem; }
+.auth-card { width: min(100%, 440px); }
+.auth-title { font-size: 1.9rem; margin-block-end: .4rem; }
+.auth-lead { color: var(--ink-soft); margin-block-end: 1.75rem; line-height: 1.9; }
+.auth-switch { margin-block-start: 1.5rem; text-align: center; color: var(--ink-soft); font-size: .95rem; }
+.auth-switch + .auth-switch { margin-block-start: .5rem; }
+
+/* ── ۸. چیدمان حساب کاربری ───────────────────────────────────────────── */
+.account-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 2rem; padding-block: 2rem; align-items: start; }
+.account-side { display: grid; gap: 1rem; position: sticky; inset-block-start: 88px; }
+.user-card { display: flex; align-items: center; gap: .85rem; padding: 1rem; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.user-card-name { font-weight: 700; line-height: 1.5; }
+.user-card-meta { font-size: .85rem; color: var(--ink-soft); text-align: right; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.avatar--initial { display: grid; place-items: center; background: var(--gold); color: var(--charcoal); font-weight: 800; font-size: 1.4rem; }
+.side-nav { display: grid; gap: .25rem; }
+.side-nav a { padding: .6rem .9rem; border-radius: var(--r-md); text-decoration: none; font-weight: 500; color: var(--ink-soft); border-inline-start: 3px solid transparent; }
+.side-nav a:hover { background: var(--ivory-deep); color: var(--charcoal); }
+.side-nav a[aria-current="page"] { background: var(--paper); color: var(--charcoal); font-weight: 700; border-inline-start-color: var(--gold); box-shadow: var(--shadow-sm); }
+.page-title { font-size: 1.7rem; margin-block-end: 1.25rem; }
+.breadcrumb { font-size: .9rem; color: var(--ink-soft); margin-block-end: .5rem; }
+
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+.card + .card, .stat-grid + .card, .card + .table-wrap, .stat-grid + .filters { margin-block-start: 1.25rem; }
+.card--narrow { max-width: 480px; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; margin-block-end: .9rem; }
+.card-head h2, .card-title { font-size: 1.1rem; }
+.card-title { margin-block: .5rem .1rem; padding-block-end: .5rem; border-block-end: 1px solid var(--line); }
+.card-title:first-child { margin-block-start: 0; }
+.card-note { font-weight: 800; color: var(--gold-ink); }
+.card .muted { margin-block: .75rem 1rem; font-size: .95rem; }
+.empty-card { text-align: center; padding-block: 2.5rem; }
+.empty-card .muted { margin-block-end: 0; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-block-end: 1.25rem; }
+.stat-grid--4 { grid-template-columns: repeat(4, 1fr); }
+.stat { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1rem 1.1rem; }
+.stat-label { font-size: .85rem; color: var(--ink-soft); }
+.stat-value { font-size: 1.6rem; font-weight: 800; line-height: 1.6; }
+.stat-value--text { font-size: 1.05rem; padding-block-start: .35rem; }
+.progress { height: 10px; background: var(--ivory-deep); border-radius: 999px; overflow: hidden; }
+.progress span { display: block; height: 100%; background: var(--gold); border-radius: inherit; }
+.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-block-end: 1.25rem; }
+
+.badge { display: inline-block; padding: .1rem .7rem; border-radius: 999px; font-size: .82rem; font-weight: 700; line-height: 1.7; background: var(--ivory-deep); color: var(--charcoal); }
+.badge--ok { background: var(--ok-bg); color: var(--ok); }
+.badge--warn { background: var(--warn-bg); color: var(--warn); }
+.badge--off { background: var(--danger-bg); color: var(--danger); }
+.badge--admin { background: var(--charcoal); color: var(--ivory); }
+.badge--support { background: var(--info-bg); color: var(--info); }
+.badge--creator { background: var(--gold-soft); color: var(--gold-ink); }
+
+/* ── ۹. جدول و فیلتر ─────────────────────────────────────────────────── */
+.filters { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 1rem; align-items: end; padding: 1.1rem; margin-block-end: 1.25rem; }
+.filters-actions { display: flex; gap: .5rem; }
+.table-wrap { overflow-x: auto; background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.table { width: 100%; border-collapse: collapse; font-size: .93rem; min-width: 720px; }
+.table th { text-align: start; font-weight: 700; color: var(--ink-soft); font-size: .85rem; padding: .85rem 1rem; background: var(--ivory-deep); white-space: nowrap; }
+.table td { padding: .85rem 1rem; border-block-start: 1px solid var(--line); vertical-align: middle; }
+.table tbody tr:hover { background: #F7F4EE; }
+.cell-sub { display: block; font-size: .82rem; color: var(--ink-soft); text-align: right; }
+.cell-actions { white-space: nowrap; display: flex; gap: .4rem; align-items: center; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-block-start: 1.5rem; }
+.page-link { padding: .4rem 1rem; border: 1.5px solid var(--charcoal); border-radius: var(--r-sm); text-decoration: none; font-weight: 700; font-size: .9rem; }
+.page-link:hover { background: var(--charcoal); color: var(--ivory); }
+.page-info { color: var(--ink-soft); font-size: .9rem; }
+
+/* ── ۱۰. صفحهٔ اصلی موقت و خطاها ───────────────────────────────────── */
+.hero { padding-block: 5rem 3rem; max-width: 760px; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.5; margin-block-end: 1rem; }
+.hero p { color: var(--ink-soft); font-size: 1.1rem; margin-block-end: 2rem; }
+.hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+.empty-state { padding-block: 5rem; text-align: center; display: grid; gap: 1rem; justify-items: center; }
+.empty-state p { color: var(--ink-soft); max-width: 46ch; }
+
+/* ── ۱۱. واکنش‌گرا ───────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .auth { grid-template-columns: 1fr; }
+  .auth-panel { padding: 1.75rem 1.5rem; flex-direction: row; align-items: center; }
+  .auth-art { display: none; }
+  .auth-panel-title { font-size: 1.2rem; margin: 0; }
+  .auth-panel-text p:last-child { display: none; }
+  .account-layout { grid-template-columns: 1fr; }
+  .account-side { position: static; }
+  .side-nav { grid-auto-flow: column; overflow-x: auto; gap: .5rem; padding-block-end: .25rem; }
+  .side-nav a { white-space: nowrap; border-inline-start: 0; border-block-end: 3px solid transparent; }
+  .side-nav a[aria-current="page"] { border-block-end-color: var(--gold); }
+  .filters { grid-template-columns: 1fr 1fr; }
+  .stat-grid--4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 760px) {
+  .nav-toggle { display: block; }
+  .nav-links { display: none; position: absolute; inset-inline: 0; inset-block-start: 100%; flex-direction: column; align-items: stretch; gap: .25rem; padding: 1rem; background: var(--ivory); border-block-end: 1px solid var(--line); box-shadow: var(--shadow-md); }
+  .nav-links.is-open { display: flex; }
+  .nav-spacer { display: none; }
+  .nav-links > a:not(.btn) { padding: .7rem .5rem; }
+  .nav-links .inline-form, .nav-links .btn { width: 100%; }
+}
+@media (max-width: 560px) {
+  .grid-2, .stat-grid, .info-grid, .filters { grid-template-columns: 1fr; }
+  .auth-main { padding-inline: 1rem; }
+  .auth-title { font-size: 1.6rem; }
+  .card { padding: 1.15rem; }
+}
+
+/* ── ۱۲. دسترس‌پذیری ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ SITE_NAME }} | فروشگاه قالب و طرح‌های گرافیکی آماده{% endblock %}
+{% block og_title %}{{ SITE_NAME }} | فروشگاه قالب و طرح‌های گرافیکی آماده{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {"@type": "Organization", "name": "{{ SITE_NAME }}", "url": "{{ request.scheme }}://{{ request.get_host }}/"},
+    {"@type": "WebSite", "name": "{{ SITE_NAME }}", "url": "{{ request.scheme }}://{{ request.get_host }}/", "inLanguage": "fa-IR"}
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+{# صفحهٔ موقت — نفر دوم (Catalog) این صفحه را با صفحهٔ اصلی فروشگاه جایگزین می‌کند. #}
+<section class="container hero">
+  <h1>قالب و طرح گرافیکی آماده، برای هر کسب‌وکار</h1>
+  <p>ویرابوم جایی است که طراح‌ها قالب می‌فروشند و شما در چند دقیقه طرح حرفه‌ای‌تان را می‌سازید.</p>
+  <div class="hero-actions">
+    {% if user.is_authenticated %}
+      <a class="btn btn-primary" href="{% url 'accounts:dashboard' %}">رفتن به داشبورد</a>
+    {% else %}
+      <a class="btn btn-primary" href="{% url 'accounts:register' %}">ساخت حساب رایگان</a>
+      <a class="btn btn-outline" href="{% url 'accounts:login' %}">ورود</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

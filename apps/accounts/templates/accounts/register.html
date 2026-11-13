@@ -1,0 +1,25 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}ساخت حساب کاربری | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}در چند ثانیه در {{ SITE_NAME }} ثبت‌نام کنید و به قالب‌ها و طرح‌های گرافیکی آماده دسترسی پیدا کنید.{% endblock %}
+
+{% block auth_content %}
+<h1 class="auth-title">ساخت حساب</h1>
+<p class="auth-lead">با شماره موبایل ثبت‌نام کنید؛ ورود هم با همین شماره انجام می‌شود.</p>
+
+<form method="post" class="form" novalidate data-submit-once>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" %}
+  <div class="grid-2">
+    {% include "includes/form_field.html" with field=form.first_name %}
+    {% include "includes/form_field.html" with field=form.last_name %}
+  </div>
+  {% include "includes/form_field.html" with field=form.phone %}
+  {% include "includes/form_field.html" with field=form.email %}
+  {% include "includes/form_field.html" with field=form.password1 %}
+  {% include "includes/form_field.html" with field=form.password2 %}
+  {% include "includes/form_field.html" with field=form.accept_terms %}
+  <button class="btn btn-primary btn-block" type="submit">ساخت حساب</button>
+</form>
+
+<p class="auth-switch">قبلاً ثبت‌نام کرده‌اید؟ <a class="link" href="{% url 'accounts:login' %}">وارد شوید</a></p>
+{% endblock %}

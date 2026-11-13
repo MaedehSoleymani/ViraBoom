@@ -1,0 +1,19 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}تأیید ایمیل | {{ SITE_NAME }}{% endblock %}
+
+{% block auth_content %}
+{% if user.email_verified %}
+  <h1 class="auth-title">ایمیل شما تأیید شده است</h1>
+  <p class="auth-lead">همهٔ امکانات حساب برایتان فعال است.</p>
+  <a class="btn btn-primary btn-block" href="{% url 'accounts:dashboard' %}">رفتن به داشبورد</a>
+{% else %}
+  <h1 class="auth-title">ایمیلتان را تأیید کنید</h1>
+  <p class="auth-lead">لینک تأیید را به <strong dir="ltr">{{ user.email }}</strong> فرستادیم. روی لینک داخل ایمیل بزنید تا حسابتان کامل شود. پوشهٔ اسپم را هم نگاه کنید.</p>
+  <form method="post" action="{% url 'accounts:verify_email_resend' %}" class="form">
+    {% csrf_token %}
+    <button class="btn btn-outline btn-block" type="submit">ارسال دوبارهٔ ایمیل</button>
+  </form>
+  <p class="auth-switch">ایمیل اشتباه است؟ <a class="link" href="{% url 'accounts:profile' %}">آن را در پروفایل اصلاح کنید</a></p>
+  <p class="auth-switch"><a class="link" href="{% url 'accounts:dashboard' %}">فعلاً به داشبورد می‌روم</a></p>
+{% endif %}
+{% endblock %}

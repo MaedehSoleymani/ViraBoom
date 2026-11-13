@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}دسترسی ندارید | {{ SITE_NAME }}{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block content %}
+<section class="container empty-state">
+  <h1>به این صفحه دسترسی ندارید</h1>
+  <p>حساب شما اجازهٔ دیدن این بخش را ندارد. اگر فکر می‌کنید اشتباهی رخ داده، با پشتیبانی تماس بگیرید.</p>
+  <a class="btn btn-primary" href="{% url 'home' %}">بازگشت به صفحه اصلی</a>
+</section>
+{% endblock %}

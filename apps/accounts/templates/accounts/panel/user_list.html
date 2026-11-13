@@ -1,0 +1,89 @@
+{% extends "accounts/account_base.html" %}
+{% load jalali_tags %}
+{% block title %}مدیریت کاربران | {{ SITE_NAME }}{% endblock %}
+
+{% block account_content %}
+<h1 class="page-title">مدیریت کاربران</h1>
+
+<div class="stat-grid stat-grid--4">
+  <div class="stat"><p class="stat-label">همهٔ کاربران</p><p class="stat-value">{{ stats.total }}</p></div>
+  <div class="stat"><p class="stat-label">فعال</p><p class="stat-value">{{ stats.active }}</p></div>
+  <div class="stat"><p class="stat-label">ایمیل تأییدنشده</p><p class="stat-value">{{ stats.unverified }}</p></div>
+  <div class="stat"><p class="stat-label">مدیر و پشتیبان</p><p class="stat-value">{{ stats.managers }}</p></div>
+</div>
+
+<form method="get" class="filters card" role="search" aria-label="جستجو و فیلتر کاربران">
+  <div class="field">
+    <label class="label" for="f-q">جستجو</label>
+    <input class="input" id="f-q" type="search" name="q" value="{{ filters.q }}" placeholder="نام، موبایل یا ایمیل">
+  </div>
+  <div class="field">
+    <label class="label" for="f-role">نقش</label>
+    <select class="input" id="f-role" name="role">
+      <option value="">همه</option>
+      {% for value, label in roles %}<option value="{{ value }}"{% if filters.role == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label class="label" for="f-status">وضعیت</label>
+    <select class="input" id="f-status" name="status">
+      <option value="">همه</option>
+      <option value="active"{% if filters.status == "active" %} selected{% endif %}>فعال</option>
+      <option value="inactive"{% if filters.status == "inactive" %} selected{% endif %}>غیرفعال</option>
+    </select>
+  </div>
+  <div class="field">
+    <label class="label" for="f-verified">ایمیل</label>
+    <select class="input" id="f-verified" name="verified">
+      <option value="">همه</option>
+      <option value="yes"{% if filters.verified == "yes" %} selected{% endif %}>تأیید شده</option>
+      <option value="no"{% if filters.verified == "no" %} selected{% endif %}>تأیید نشده</option>
+    </select>
+  </div>
+  <div class="filters-actions">
+    <button class="btn btn-primary btn-sm" type="submit">اعمال فیلتر</button>
+    <a class="btn btn-ghost btn-sm" href="{% url 'accounts:user_list' %}">پاک‌کردن</a>
+  </div>
+</form>
+
+{% if users %}
+<div class="table-wrap">
+  <table class="table">
+    <caption class="sr-only">فهرست کاربران</caption>
+    <thead>
+      <tr><th scope="col">کاربر</th><th scope="col">موبایل</th><th scope="col">نقش</th><th scope="col">وضعیت</th><th scope="col">عضویت</th><th scope="col"><span class="sr-only">عملیات</span></th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>
+          <strong>{{ u.display_name }}</strong>
+          {% if u.email %}<span class="cell-sub" dir="ltr">{{ u.email }}{% if not u.email_verified %} · تأییدنشده{% endif %}</span>{% endif %}
+        </td>
+        <td dir="ltr">{{ u.phone }}</td>
+        <td><span class="badge badge--{{ u.role }}">{{ u.get_role_display }}</span></td>
+        <td>{% if u.is_active %}<span class="badge badge--ok">فعال</span>{% else %}<span class="badge badge--off">غیرفعال</span>{% endif %}</td>
+        <td>{{ u.date_joined|jdate:"Y/m/d" }}</td>
+        <td class="cell-actions">
+          <a class="btn btn-outline btn-sm" href="{% url 'accounts:user_manage' u.pk %}">مدیریت</a>
+          {% if u.pk != user.pk and not u.is_superuser or u.pk != user.pk and user.is_superuser %}
+          <form method="post" action="{% url 'accounts:user_toggle_active' u.pk %}" class="inline-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button class="btn btn-ghost btn-sm" type="submit">{% if u.is_active %}غیرفعال‌سازی{% else %}فعال‌سازی{% endif %}</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% include "includes/pagination.html" %}
+{% else %}
+<div class="card empty-card">
+  <h2>کاربری پیدا نشد</h2>
+  <p class="muted">فیلترها را تغییر دهید یا پاک کنید.</p>
+</div>
+{% endif %}
+{% endblock %}
