@@ -1,0 +1,36 @@
+{% extends "accounts/account_base.html" %}
+{% block title %}ویرایش پروفایل | {{ SITE_NAME }}{% endblock %}
+
+{% block account_content %}
+<h1 class="page-title">ویرایش پروفایل</h1>
+
+<form method="post" enctype="multipart/form-data" class="form card" novalidate data-submit-once>
+  {% csrf_token %}
+
+  <h2 class="card-title">اطلاعات حساب</h2>
+  <div class="field">
+    <span class="label">شماره موبایل</span>
+    <p class="readonly" dir="ltr">{{ user.phone }}</p>
+    <p class="help">شمارهٔ موبایل شناسهٔ ورود شماست و از اینجا قابل تغییر نیست.</p>
+  </div>
+  <div class="grid-2">
+    {% include "includes/form_field.html" with field=user_form.first_name %}
+    {% include "includes/form_field.html" with field=user_form.last_name %}
+  </div>
+  {% include "includes/form_field.html" with field=user_form.email %}
+  {% if not user.email_verified %}<p class="help help--warn">ایمیل فعلی تأیید نشده است.</p>{% endif %}
+
+  <h2 class="card-title">دربارهٔ شما</h2>
+  {% include "includes/form_field.html" with field=details_form.avatar %}
+  {% include "includes/form_field.html" with field=details_form.bio %}
+  <div class="grid-2">
+    {% include "includes/form_field.html" with field=details_form.city %}
+    {% include "includes/form_field.html" with field=details_form.instagram %}
+  </div>
+  {% include "includes/form_field.html" with field=details_form.website %}
+
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">ذخیرهٔ تغییرات</button>
+  </div>
+</form>
+{% endblock %}

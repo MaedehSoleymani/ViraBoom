@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% comment %} قالب پایه صفحات داخل حساب کاربری (سایدبار + محتوا). همه noindex هستند. {% endcomment %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block body_class %}page-account{% endblock %}
+
+{% block content %}
+{% with current=request.resolver_match.url_name %}
+<div class="container account-layout">
+  <aside class="account-side">
+    <div class="user-card">
+      {% if user.profile.avatar %}
+        <img class="avatar" src="{{ user.profile.avatar.url }}" alt="" width="56" height="56">
+      {% else %}
+        <span class="avatar avatar--initial" aria-hidden="true">{{ user.display_name|slice:":1" }}</span>
+      {% endif %}
+      <div>
+        <p class="user-card-name">{{ user.display_name }}</p>
+        <p class="user-card-meta" dir="ltr">{{ user.phone }}</p>
+      </div>
+    </div>
+    <nav class="side-nav" aria-label="منوی حساب کاربری">
+      <a href="{% url 'accounts:dashboard' %}"{% if current == 'dashboard' %} aria-current="page"{% endif %}>داشبورد</a>
+      <a href="{% url 'accounts:profile' %}"{% if current == 'profile' %} aria-current="page"{% endif %}>ویرایش پروفایل</a>
+      <a href="{% url 'accounts:password_change' %}"{% if current == 'password_change' %} aria-current="page"{% endif %}>تغییر رمز عبور</a>
+      {# هم‌تیمی‌ها: «سفارش‌ها»، «دانلودها» و ... را اینجا اضافه کنند #}
+      {% if user.can_manage_users %}
+        <a href="{% url 'accounts:user_list' %}"{% if current == 'user_list' or current == 'user_manage' %} aria-current="page"{% endif %}>مدیریت کاربران</a>
+      {% endif %}
+    </nav>
+  </aside>
+
+  <section class="account-main">
+    {% block account_content %}{% endblock %}
+  </section>
+</div>
+{% endwith %}
+{% endblock %}

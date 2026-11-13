@@ -1,0 +1,40 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ SITE_DESCRIPTION }}{% endblock %}">
+  <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+  <meta name="theme-color" content="#2E2E2C">
+  <link rel="canonical" href="{% block canonical %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
+
+  {# Open Graph / Twitter — صفحات عمومی می‌توانند og_title و og_description را override کنند #}
+  <meta property="og:site_name" content="{{ SITE_NAME }}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:title" content="{% block og_title %}{{ SITE_NAME }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ SITE_DESCRIPTION }}{% endblock %}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta name="twitter:card" content="summary">
+
+  <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block structured_data %}{% endblock %}
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <a class="skip-link" href="#main">پرش به محتوای اصلی</a>
+  {% include "includes/navbar.html" %}
+  {% include "includes/messages.html" %}
+  <main id="main" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+  {% include "includes/footer.html" %}
+  <script src="{% static 'js/main.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}ورود به حساب کاربری | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}با شماره موبایل و رمز عبور وارد حساب {{ SITE_NAME }} شوید و قالب‌های خریداری‌شده‌تان را مدیریت کنید.{% endblock %}
+
+{% block auth_content %}
+<h1 class="auth-title">ورود به حساب</h1>
+<p class="auth-lead">شماره موبایل و رمز عبورتان را وارد کنید.</p>
+
+<form method="post" class="form" novalidate data-submit-once>
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% include "includes/form_errors.html" %}
+  {% include "includes/form_field.html" with field=form.phone %}
+  {% include "includes/form_field.html" with field=form.password %}
+  <div class="form-row">
+    {% include "includes/form_field.html" with field=form.remember_me %}
+    <a class="link" href="{% url 'accounts:password_reset' %}">رمز عبور را فراموش کرده‌اید؟</a>
+  </div>
+  <button class="btn btn-primary btn-block" type="submit">ورود</button>
+</form>
+
+<p class="auth-switch">حساب ندارید؟ <a class="link" href="{% url 'accounts:register' %}">ثبت‌نام کنید</a></p>
+{% endblock %}

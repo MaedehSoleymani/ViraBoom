@@ -1,0 +1,52 @@
+{% extends "accounts/account_base.html" %}
+{% load jalali_tags %}
+{% block title %}داشبورد | {{ SITE_NAME }}{% endblock %}
+
+{% block account_content %}
+<h1 class="page-title">سلام {{ user.get_short_name }}</h1>
+
+{% if not user.email_verified %}
+<div class="alert alert-warning" role="status">
+  <p>ایمیل شما هنوز تأیید نشده است. برای خرید و بازیابی رمز عبور، آن را تأیید کنید.</p>
+  <form method="post" action="{% url 'accounts:verify_email_resend' %}" class="inline-form">
+    {% csrf_token %}
+    <button class="btn btn-outline btn-sm" type="submit">ارسال لینک تأیید</button>
+  </form>
+</div>
+{% endif %}
+
+<div class="stat-grid">
+  <div class="stat">
+    <p class="stat-label">نقش حساب</p>
+    <p class="stat-value"><span class="badge badge--{{ user.role }}">{{ user.get_role_display }}</span></p>
+  </div>
+  <div class="stat">
+    <p class="stat-label">وضعیت ایمیل</p>
+    <p class="stat-value">
+      {% if user.email_verified %}<span class="badge badge--ok">تأیید شده</span>{% else %}<span class="badge badge--warn">تأیید نشده</span>{% endif %}
+    </p>
+  </div>
+  <div class="stat">
+    <p class="stat-label">عضویت از</p>
+    <p class="stat-value stat-value--text">{{ user.date_joined|jdate:"j F Y" }}</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <h2>تکمیل پروفایل</h2>
+    <span class="card-note">{{ completion }}٪</span>
+  </div>
+  <div class="progress" role="progressbar" aria-valuenow="{{ completion }}" aria-valuemin="0" aria-valuemax="100" aria-label="درصد تکمیل پروفایل">
+    <span style="width: {{ completion }}%"></span>
+  </div>
+  {% if completion < 100 %}
+    <p class="muted">نام، تصویر، معرفی کوتاه و شهر را کامل کنید تا پروفایلتان معتبرتر دیده شود.</p>
+    <a class="btn btn-outline btn-sm" href="{% url 'accounts:profile' %}">تکمیل پروفایل</a>
+  {% else %}
+    <p class="muted">پروفایل شما کامل است.</p>
+  {% endif %}
+</div>
+
+{# جای کارت‌های «آخرین سفارش‌ها» و «دانلودهای من» (نفر سوم) #}
+{% endblock %}

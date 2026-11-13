@@ -1,0 +1,31 @@
+{% extends "accounts/account_base.html" %}
+{% load jalali_tags %}
+{% block title %}{{ managed_user.display_name }} | مدیریت کاربران | {{ SITE_NAME }}{% endblock %}
+
+{% block account_content %}
+<p class="breadcrumb"><a class="link" href="{% url 'accounts:user_list' %}">مدیریت کاربران</a> / {{ managed_user.display_name }}</p>
+<h1 class="page-title">{{ managed_user.display_name }}</h1>
+
+<div class="card info-grid">
+  <div><p class="stat-label">موبایل</p><p dir="ltr">{{ managed_user.phone }}</p></div>
+  <div><p class="stat-label">عضویت</p><p>{{ managed_user.date_joined|jdate:"Y/m/d H:i" }}</p></div>
+  <div><p class="stat-label">آخرین ورود</p><p>{% if managed_user.last_login %}{{ managed_user.last_login|jdate:"Y/m/d H:i" }}{% else %}—{% endif %}</p></div>
+</div>
+
+<form method="post" class="form card" novalidate data-submit-once>
+  {% csrf_token %}
+  {% include "includes/form_errors.html" %}
+  <div class="grid-2">
+    {% include "includes/form_field.html" with field=form.first_name %}
+    {% include "includes/form_field.html" with field=form.last_name %}
+  </div>
+  {% include "includes/form_field.html" with field=form.email %}
+  {% include "includes/form_field.html" with field=form.role %}
+  {% include "includes/form_field.html" with field=form.is_active %}
+  {% include "includes/form_field.html" with field=form.email_verified %}
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">ذخیرهٔ تغییرات</button>
+    <a class="btn btn-ghost" href="{% url 'accounts:user_list' %}">بازگشت</a>
+  </div>
+</form>
+{% endblock %}
