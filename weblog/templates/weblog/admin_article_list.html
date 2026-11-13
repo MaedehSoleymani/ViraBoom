@@ -1,0 +1,130 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ویرایش مقاله | ویرابوم</title>
+    <link rel="stylesheet" href="{% static 'weblog/admin_article_list.css' %}">
+</head>
+
+<body>
+    <div class="page">
+
+        <header class="page-header">
+            <div>
+                <a href="{% url 'weblog:article_list' %}" class="back-link">
+                    بازگشت به سایت
+                </a>
+                <h1>مدیریت مقالات</h1>
+                <p>مشاهده و مدیریت تمام مقاله‌های ثبت‌شده</p>
+            </div>
+
+            <a href="{% url 'weblog:write_article' %}" class="add-button">
+                + مقاله جدید
+            </a>
+        </header>
+
+        <section class="stats">
+            <div class="stat-card">
+                <span>تعداد کل مقالات</span>
+                <strong>{{ articles|length }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>مقالات منتشرشده</span>
+                <strong>{{ published_count }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>پیش‌نویس‌ها</span>
+                <strong>{{ draft_count }}</strong>
+            </div>
+        </section>
+
+        <section class="table-container">
+            {% if articles %}
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>عنوان مقاله</th>
+                                <th>نویسنده</th>
+                                <th>وضعیت</th>
+                                <th>تاریخ ایجاد</th>
+                                <th>بازدید</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for article in articles %}
+                                <tr>
+                                    <td class="article-title">
+                                        <a href="{% url 'weblog:article_detail' slug=article.slug %}">
+                                            {% if article.img %}
+                                                <img src="{{ article.img.url }}"
+                                                    alt="{{ article.alt_img|default:article.title }}">
+                                            {% endif %}
+                                            <span>{{ article.title }}</span>
+                                        </a>
+                                    </td>
+
+                                    <td>{{ article.author }}</td>
+
+                                    <td>
+                                        {% if article.status == "published" %}
+                                            <span class="status published">
+                                                منتشرشده
+                                            </span>
+                                        {% else %}
+                                            <span class="status draft">
+                                                پیش‌نویس
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>{{ article.created_date|date:"Y/m/d" }}</td>
+
+                                    <td>{{ article.view_count }}</td>
+
+                                    
+                                    <td class="actions">
+
+                                        <a href="{% url 'weblog:article_edit' article_id=article.id %}"
+                                        class="action edit">
+                                            ویرایش
+                                        </a>
+
+                                        <form method="POST"
+                                            action="{% url 'weblog:article_delete' article_id=article.id %}"
+                                            onsubmit="return confirm('آیا از حذف این مقاله مطمئن هستید؟');"
+                                            style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action delete">
+                                                حذف
+                                            </button>
+                                        </form>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h2>هنوز مقاله‌ای ثبت نشده است.</h2>
+                    <p>با ساخت اولین مقاله، اینجا فهرست مقالاتت نمایش داده می‌شود.</p>
+                    <a href="{% url 'weblog:write_article' %}" class="add-button">
+                        ثبت اولین مقاله
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+
+    </div>
+</body>
+</html>
